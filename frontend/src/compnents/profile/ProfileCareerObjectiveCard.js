@@ -39,6 +39,8 @@ class ProfileCareerObjectiveCard extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            CareerObjective: this.props.CareerObjective,
+            EmployerDescription: this.props.Description
         }
         this.handleShow = this.handleShow.bind(this);
         this.handleClose = this.handleClose.bind(this);
@@ -66,7 +68,6 @@ class ProfileCareerObjectiveCard extends Component {
         if(this.props.user.user_type === "student") {
             if (this.state.objective) {
                 const data = {
-                    CareerObjective: this.state.objective,
                 }
                 this.props.updateStudentProfile(this.props.studentData, data);
             }
@@ -105,14 +106,14 @@ class ProfileCareerObjectiveCard extends Component {
                                     this.props.user.user_type === "student" &&
                                     <Form.Row>
                                         <Form.Label>Objective</Form.Label>
-                                        <Form.Control name="objective" as="textarea" defaultValue={this.props.careerObjective} onChange={this.onValueChangeHandler} />
+                                        <Form.Control name="objective" as="textarea" defaultValue={this.state.CareerObjective} onChange={this.onValueChangeHandler} />
                                     </Form.Row>
                                 }
                                 {
                                     this.props.user.user_type === "employer" &&
                                     <Form.Row>
                                         <Form.Label>About us</Form.Label>
-                                        <Form.Control name="discription" as="textarea" defaultValue={this.props.discription} onChange={this.onValueChangeHandler} />
+                                        <Form.Control name="discription" as="textarea" defaultValue={this.state.EmployerDescription} onChange={this.onValueChangeHandler} />
                                     </Form.Row>
                                 }
                             </Form>
@@ -130,12 +131,12 @@ class ProfileCareerObjectiveCard extends Component {
                         <Row>
                             <Col xs={11} md={11}>
                                 {
-                                    this.props.user.user_type === "student" &&
-                                    <div>{this.props.first_name}'s Journey.</div>
+                                    localStorage.getItem("Type") === "student" &&
+                                    <div>{localStorage.getItem("StudentName")}'s Journey.</div>
                                 }
                                 {
-                                    this.props.user.user_type === "employer" &&
-                                    <div>About {this.props.name}</div>
+                                    localStorage.getItem("Type") === "employer" &&
+                                    <div>About {localStorage.getItem("EmployerName")}</div>
                                 }
                             </Col>
                             <Col xs={1} md={1}>
@@ -144,15 +145,15 @@ class ProfileCareerObjectiveCard extends Component {
                         </Row>
                     </div>
                     {
-                        this.props.user.user_type === "student" &&
+                        localStorage.getItem("Type") === "student" &&
                         <div className="profile-objective-value">
-                            {this.props.careerObjective}
+                            {this.state.CareerObjective}
                         </div>
                     }
                     {
-                        this.props.user.user_type === "employer" &&
+                        localStorage.getItem("Type") === "employer" &&
                         <div className="profile-objective-value">
-                            {this.props.discription}
+                            {this.state.EmployerDescription}
                         </div>
                     }
 

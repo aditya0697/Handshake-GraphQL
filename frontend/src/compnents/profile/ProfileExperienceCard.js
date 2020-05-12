@@ -75,6 +75,7 @@ class ProfileExperienceCard extends Component {
             alertFlag: false,
             start_date: new Date(),
             end_date: new Date(),
+            Experiences: this.props.Experiences
         }
         this.handleShow = this.handleShow.bind(this);
         this.handleClose = this.handleClose.bind(this);
@@ -140,15 +141,23 @@ class ProfileExperienceCard extends Component {
         this.props.updateStudentProfile(this.props.studentData, this.props.experiences);
     }
 
+    getProcessedDate = (date) => {
+        if (!date) {
+            return "";
+        }
+        const d = new Date(date);
+        return d.toLocaleString('US').split(',')[0];
+    }
+
     render() {
         let experienceDetails = [];
         if (this.props.experiences) {
-            experienceDetails = this.props.experiences.map((job,id) => {
-                if(!job){
+            experienceDetails = this.props.experiences.map((job, id) => {
+                if (!job) {
                     return;
                 }
                 return (
-                    <ModalExperience id={id}/>
+                    <ModalExperience id={id} />
                 )
             })
         }
@@ -156,63 +165,86 @@ class ProfileExperienceCard extends Component {
         return (
             <Styles>
                 <div className="profile-experienceCard-card ">
-                <Modal show={this.state.show} onHide={this.handleClose}>
-                    <Modal.Header closeButton>
-                        <Modal.Title>Edit Experience</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <Form>
-                            <Form.Group controlId="employer">
-                                <Form.Label className="signup-form-lable">Employer</Form.Label>
-                                <Form.Control onChange={this.onValueChangeHandler} name="employer" placeholder="employer" />
-                            </Form.Group>
-                            <Form.Row>
-                                <Form.Group as={Col} controlId="title">
-                                    <Form.Label className="signup-form-lable">Title</Form.Label>
-                                    <Form.Control onChange={this.onValueChangeHandler} name="title" placeholder="title"/>
+                    <Modal show={this.state.show} onHide={this.handleClose}>
+                        <Modal.Header closeButton>
+                            <Modal.Title>Edit Experience</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                            <Form>
+                                <Form.Group controlId="employer">
+                                    <Form.Label className="signup-form-lable">Employer</Form.Label>
+                                    <Form.Control onChange={this.onValueChangeHandler} name="employer" placeholder="employer" />
                                 </Form.Group>
-                            </Form.Row>
-                            <Form.Row>
-                                <Form.Group as={Col} controlId="start_date">
-                                    <Form.Label className="signup-form-lable">Start Date</Form.Label>
-                                    <br />
-                                    <DatePicker selected={this.state.start_date} name="start_date" className="date_picker" onChange={this.startDateChangeHandler} />
-                                    <br />
-                                </Form.Group>
-                                <Form.Group as={Col} controlId="end_date">
-                                    <Form.Label className="signup-form-lable">End Date</Form.Label>
-                                    <br />
-                                    <DatePicker selected={this.state.end_date} name="end_date" className="date_picker" onChange={this.endDateChangeHandler} />
-                                    <br />
-                                </Form.Group>
-                            </Form.Row>
-                            <Form.Row>
+                                <Form.Row>
+                                    <Form.Group as={Col} controlId="title">
+                                        <Form.Label className="signup-form-lable">Title</Form.Label>
+                                        <Form.Control onChange={this.onValueChangeHandler} name="title" placeholder="title" />
+                                    </Form.Group>
+                                </Form.Row>
+                                <Form.Row>
+                                    <Form.Group as={Col} controlId="start_date">
+                                        <Form.Label className="signup-form-lable">Start Date</Form.Label>
+                                        <br />
+                                        <DatePicker selected={this.state.start_date} name="start_date" className="date_picker" onChange={this.startDateChangeHandler} />
+                                        <br />
+                                    </Form.Group>
+                                    <Form.Group as={Col} controlId="end_date">
+                                        <Form.Label className="signup-form-lable">End Date</Form.Label>
+                                        <br />
+                                        <DatePicker selected={this.state.end_date} name="end_date" className="date_picker" onChange={this.endDateChangeHandler} />
+                                        <br />
+                                    </Form.Group>
+                                </Form.Row>
+                                <Form.Row>
                                     <Form.Label>Discription</Form.Label>
-                                    <Form.Control name="discription" as="textarea"  placeholder="Discription..." onChange={this.onValueChangeHandler} />
-                            </Form.Row>
-                        </Form>
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <Button variant="secondary" onClick={this.handleClose}>
-                            Close
+                                    <Form.Control name="discription" as="textarea" placeholder="Discription..." onChange={this.onValueChangeHandler} />
+                                </Form.Row>
+                            </Form>
+                        </Modal.Body>
+                        <Modal.Footer>
+                            <Button variant="secondary" onClick={this.handleClose}>
+                                Close
                         </Button>
-                        <Button variant="primary" onClick={this.saveChangeHandler}>
-                            Save Changes
+                            <Button variant="primary" onClick={this.saveChangeHandler}>
+                                Save Changes
                         </Button>
-                    </Modal.Footer>
-                </Modal>
+                        </Modal.Footer>
+                    </Modal>
                     <div className="profile-experience-name">
                         <Row>
                             <Col xs={11} md={11}>
                                 Work & Volunteer Experience
                             </Col>
                             <Col xs={1} md={1}>
-                                <Icon type="plus" onClick={this.handleShow}></Icon>
+                                <Icon type="edit" onClick={this.handleShow}></Icon>
                             </Col>
                         </Row>
                     </div>
                     <div>
-                        {experienceDetails}
+                        <div>
+                            <div className="profile-experience-card">
+                                <div className="profile-education-school">
+                                    <Row>
+                                        <Col xs={11} md={11}>
+                                            {this.state.Experiences.Employer}
+                                        </Col>
+                                    </Row>
+                                </div>
+                                <div className="profile-experience-title">
+                                    {this.state.Experiences.Title}
+                                </div>
+                                <div className="profile-experience-date">
+                                    {"Start date: " + this.getProcessedDate(this.state.Experiences.StartDate)}
+                                </div>
+                                <div className="profile-experience-date">
+                                    {"End date: " + this.getProcessedDate(this.state.Experiences.EndDate)}
+                                </div>
+                                <div className="profile-experience-discription">
+                                    {this.state.Experiences.Description}
+                                </div>
+                            </div>
+                            <div className="profile-experience-card-divider"></div>
+                        </div>
                     </div>
                 </div>
             </Styles>
@@ -227,4 +259,4 @@ const mapStateToProps = state => {
         user: state.auth,
     };
 };
-export default connect(mapStateToProps, { updateStudentProfile})(ProfileExperienceCard);
+export default connect(mapStateToProps, { updateStudentProfile })(ProfileExperienceCard);

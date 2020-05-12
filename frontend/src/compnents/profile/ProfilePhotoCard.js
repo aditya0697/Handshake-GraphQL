@@ -7,7 +7,7 @@ import styled from 'styled-components';
 import axios from "axios";
 import { connect } from 'react-redux';
 import { updateStudentProfile, updateStudentProfilePicture } from './../../redux/actions/studentActions'
-import { updateEmployerProfile , updateEmployerProfilePicture} from './../../redux/actions/employerActions';
+import { updateEmployerProfile, updateEmployerProfilePicture } from './../../redux/actions/employerActions';
 import { getPhoneNumber, getEmail, getProfileUrl, getName, getLastEducation, getFirstName, getLastName, getAddress } from './../../redux/selectors';
 
 
@@ -120,14 +120,14 @@ class ProfilePhotoCard extends Component {
         //     }).catch((error) => {
         //         console.log("upload-profile error: " + JSON.stringify(error));
         //     });
-        if(this.state.profile_pic){
-            if(this.props.user.user_type === "student"){
-                this.props.updateStudentProfilePicture(this.state.profile_pic,this.props.user.email);
-            }else{
-                this.props.updateEmployerProfilePicture(this.state.profile_pic,this.props.user.email);
+        if (this.state.profile_pic) {
+            if (localStorage.getItem("Type") === "student") {
+                this.props.updateStudentProfilePicture(this.state.profile_pic, this.props.user.email);
+            } else {
+                this.props.updateEmployerProfilePicture(this.state.profile_pic, this.props.user.email);
             }
         }
-        
+
 
         this.setState({
             profile_show: false,
@@ -140,7 +140,7 @@ class ProfilePhotoCard extends Component {
             show: false,
         })
 
-        if (this.props.user.user_type === "student") {
+        if (localStorage.getItem("Type") === "student") {
             if (this.state.first_name) {
                 this.props.updateStudentFirstName(this.state.first_name);
             }
@@ -148,9 +148,9 @@ class ProfilePhotoCard extends Component {
                 this.props.updateStudentLastName(this.state.last_name);
             }
         }
-        if (this.props.user.user_type === "employer") {
+        if (localStorage.getItem("Type") === "employer") {
             if (this.state.comapnay_name) {
-                this.props.updateEmployerProfile(this.props.employerData,{ EmployerName: this.state.comapnay_name});
+                this.props.updateEmployerProfile(this.props.employerData, { EmployerName: this.state.comapnay_name });
             }
         }
     }
@@ -187,7 +187,7 @@ class ProfilePhotoCard extends Component {
                             </Modal.Header>
                             <Modal.Body>
                                 <Form>
-                                    {this.props.user.user_type === "student" &&
+                                    {localStorage.getItem("Type") === "student" &&
                                         <div>
                                             <Form.Row>
                                                 <Form.Group as={Col} controlId="firstName">
@@ -201,7 +201,7 @@ class ProfilePhotoCard extends Component {
                                             </Form.Row>
                                         </div>
                                     }
-                                    {this.props.user.user_type === "employer" &&
+                                    {localStorage.getItem("Type") === "employer" &&
                                         <div>
                                             <Form.Group as={Col} controlId="company_name">
                                                 <Form.Label className="signup-form-lable">First Name</Form.Label>
@@ -225,29 +225,33 @@ class ProfilePhotoCard extends Component {
                     </Row>
                     <Row>
                         <div className="profile-photo">
-                            <Avatar name={this.props.name} onClick={this.profilePhotoModalHandleShow} src={this.props.profileUrl} size={95} round={true} />
+                            {localStorage.getItem("Type") === "student" &&
+                                <Avatar name={localStorage.getItem("StudentName")} onClick={this.profilePhotoModalHandleShow} src={this.props.profileUrl} size={95} round={true} />}
+                            {localStorage.getItem("Type") === "employer" &&
+                                <Avatar name={localStorage.getItem("EmployerName")} onClick={this.profilePhotoModalHandleShow} src={this.props.profileUrl} size={95} round={true} />}
+
                         </div>
                         <Icon type="edit" onClick={this.handleShow}></Icon>
                         {/* <Button icon="edit" >edit
                         </Button> */}
                     </Row>
                     <Row>
-                        {this.props.user.user_type === "employer" &&
+                        {localStorage.getItem("Type") === "employer" &&
                             <div className="profile-centered-div">
-                                <div className="profile-name-text">{this.props.name}<br /></div>
+                                <div className="profile-name-text">{localStorage.getItem("EmployerName")}<br /></div>
                                 <div className="profile-name-text">
                                     Address
                                 </div>
-                                {this.props.address &&
+                                {this.props.employer.Address &&
                                     <div>
                                         <div className="profile-university-text">
-                                            {this.props.address.Street}
+                                            {this.props.employer.Address.Street}
                                         </div>
                                         <div className="profile-university-text">
-                                            {this.props.address.Apt}
+                                            {this.props.employer.Address.Apt}
                                         </div>
                                         <div className="profile-university-text">
-                                            {this.props.address.City}, {this.props.address.State}, {this.props.address.Zipcode}
+                                            {this.props.employer.Address.City}, {this.props.employer.Address.State}, {this.props.employer.Address.Zipcode}
                                         </div>
                                     </div>
                                 }
@@ -255,13 +259,13 @@ class ProfilePhotoCard extends Component {
                         }
                     </Row>
                     <Row>
-                        {this.props.user.user_type === "student" &&
+                        {localStorage.getItem("Type") === "student" &&
                             <div class="profile-centered-div">
                                 <div className="profile-name-text">{this.props.name}<br /></div>
-                                {this.props.education && <div className="profile-university-text">{this.props.education.School}<br /></div>}
-                                {this.props.education && <div className="profile-university-text">{this.props.education.Level}  •  {this.props.education.Major}<br /></div>}
-                                {this.props.education && <div className="profile-graduates-text">Graduates on {this.getProcessedDate(this.props.education.GradDate)}<br /></div>}
-                                {this.props.education && <div className="profile-graduates-text">{this.props.education.Level}  • {this.props.education.GPA}<br /></div>}
+                                {this.props.student.Educations && <div className="profile-university-text">{this.props.student.Educations.School}<br /></div>}
+                                {this.props.student.Educations && <div className="profile-university-text">{this.props.student.Educations.Level}  •  {this.props.student.Educations.Major}<br /></div>}
+                                {this.props.student.Educations && <div className="profile-graduates-text">Graduates on {this.getProcessedDate(this.props.student.Educations.GradDate)}<br /></div>}
+                                {this.props.student.Educations && <div className="profile-graduates-text">{this.props.student.Educations.Level}  • {this.props.student.Educations.GPA}<br /></div>}
 
                             </div>
                         }
@@ -271,20 +275,5 @@ class ProfilePhotoCard extends Component {
         )
     }
 }
-const mapStateToProps = state => {
-    return {
-        user: state.auth,
-        name: getName(state),
-        first_name: getFirstName(state),
-        last_name: getLastName(state),
-        education: getLastEducation(state.student.studentData),
-        email: getEmail(state),
-        phoneNumber: getPhoneNumber(state),
-        profileUrl: getProfileUrl(state),
-        address: getAddress(state.employer.employerData),
-        studentData: state.student.studentData,
-        employerData: state.employer.employerData,
-    };
-};
 
-export default connect(mapStateToProps, { updateStudentProfile, updateEmployerProfile, updateEmployerProfilePicture, updateStudentProfilePicture })(ProfilePhotoCard);
+export default (ProfilePhotoCard);

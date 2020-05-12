@@ -25,6 +25,22 @@ query($id: ID!) {
     }
 }`;
 
+const getEmployerDetailsQuery = gql`
+query($id: ID!) {
+    employer(id: $id) {
+        EmployerName
+        Email
+        EmployerDescription
+        Address{
+        City
+        State
+        Apt
+        Street
+        State
+        }
+    }
+}`;
+
 const getAllStudentQuery = gql`
 query($Name: String!) {
     allStudents(Name: $Name) {
@@ -88,4 +104,4 @@ query($EmployerID: ID, $StudentID: ID){
     }
 }
 `;
-export { getAllStudentQuery, getStudentDetailsQuery, getJobsQuery, getApplicationsQuery};
+export { getAllStudentQuery, getStudentDetailsQuery, getJobsQuery, getApplicationsQuery, getEmployerDetailsQuery};

@@ -9,6 +9,9 @@ import ProfileContactInfoCard from './ProfileContactInfoCard';
 import ProfileCareerObjectiveCard from './ProfileCareerObjectiveCard';
 import ProfileEducationCard from './ProfileEducationCard';
 import ProfileExperienceCard from './ProfileExperienceCard';
+import { getStudentDetailsQuery, getEmployerDetailsQuery } from '../../queries/queries';
+import { graphql, Query } from 'react-apollo';
+import { flowRight as compose } from 'lodash';
 
 
 const Styles = styled.div`
@@ -39,69 +42,126 @@ const Styles = styled.div`
   `;
 
 class ProfileDashBoard extends Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            studentId: this.props.studentId,
+            student: null,
+            employer: null,
+        }
+    }
+
+
+    ShowStudentDetails = () => {
+        var name = localStorage.getItem("Name");
+        if (!name) {
+            name = "";
+        }
+        var data = this.props.getStudentDetailsQuery;
+        console.log("data", data);
+        if (data.loading) {
+        } else {
+            if (data.student) {
+                this.setState({
+                    student: data.student
+                })
+            }
+        }
+
+    }
+
+    ShowEmployerDetails = () => {
+        var name = localStorage.getItem("Name");
+        if (!name) {
+            name = "";
+        }
+        var data = this.props.getEmployerDetailsQuery;
+        console.log(" Employer data", data.employer);
+        if (data.loading) {
+        } else {
+            if (data.employer) {
+                console.log(" Employer data", data);
+                this.setState({
+                    employer: data.employer
+                })
+            }
+        }
+
+    }
+
+
+
     render() {
-        if(this.props.user.user_type === "student"){
-            return (
-                <Styles>
-                    <div className="profile-dashboard-background">
-                        <Row>
-                            <Col sm={3} md={3} className="profile-dashboard-sidebar-col">
-                                <div className="profile-sidebar-backgroung">
-                                    <ProfilePhotoCard/>
-                                    <div className="profile-sidebar-divider"></div>
-                                    <ProfileSkills/>
-                                    <div className="profile-sidebar-divider"></div>
-                                    <ProfileContactInfoCard/>
-                                    <div className="profile-sidebar-divider"></div>
-                                </div>
-                            </Col>
-                            <Col sm={8} md={8}>
-                                <div className="">
-                                    <ProfileCareerObjectiveCard/>
-                                    <div className="profile-sidebar-divider"></div>
-                                    <ProfileEducationCard/>
-                                    <div className="profile-sidebar-divider"></div>
-                                    <ProfileExperienceCard/>
-                                    <div className="profile-sidebar-divider"></div>
-                                </div>
-                            </Col>
-                        </Row>
-                    </div>
-                </Styles>
-            )
-        }else if(this.props.user.user_type === "employer"){
-            return (
-                <Styles>
-                    <div className="profile-dashboard-background">
-                        <Row>
-                            <Col sm={3} md={3} className="profile-dashboard-sidebar-col">
-                                <div className="profile-sidebar-backgroung">
-                                    <ProfilePhotoCard/>
-                                    <div className="profile-sidebar-divider"></div>
-                                    <div className="profile-sidebar-divider"></div>
-                                    <ProfileContactInfoCard/>
-                                    <div className="profile-sidebar-divider"></div>
-                                </div>
-                            </Col>
-                            <Col sm={8} md={8}>
-                                <div className="">
-                                    <ProfileCareerObjectiveCard/>
-                                    <div className="profile-sidebar-divider"></div>
-                                </div>
-                            </Col>
-                        </Row>
-                    </div>
-                </Styles>
-            )
-        }else{
-            return(
-                <div>
-                Error
+        if (this.state.student === null && localStorage.getItem("Type") === 'student') {
+            this.ShowStudentDetails();
+        }
+        if (this.state.employer === null && localStorage.getItem("Type") === 'employer') {
+            this.ShowEmployerDetails();
+            return <div>
+                Loading
             </div>
+        }
+        if (localStorage.getItem("Type") === "student" && this.state.student) {
+            return (
+                <Styles>
+                    <div className="profile-dashboard-background">
+                        <Row>
+                            <Col sm={3} md={3} className="profile-dashboard-sidebar-col">
+                                <div className="profile-sidebar-backgroung">
+                                    <ProfilePhotoCard student={this.state.student}  />
+                                    <div className="profile-sidebar-divider"></div>
+                                    <ProfileContactInfoCard student={this.state.student}  employer={this.state.employer}/>
+                                    <div className="profile-sidebar-divider"></div>
+                                </div>
+                            </Col>
+                            <Col sm={8} md={8}>
+                                <div className="">
+                                    <ProfileCareerObjectiveCard CareerObjective={this.state.student.CareerObjective}  />
+                                    <div className="profile-sidebar-divider"></div>
+                                    <ProfileEducationCard Educations={this.state.student.Educations} />
+                                    <div className="profile-sidebar-divider"></div>
+                                    <ProfileExperienceCard Experiences={this.state.student.Experiences} />
+                                    <div className="profile-sidebar-divider"></div>
+                                </div>
+                            </Col>
+                        </Row>
+                    </div>
+                </Styles>
+            )
+        } else if (localStorage.getItem("Type") === "employer" && this.state.employer != null) {
+            return (
+                <Styles>
+                    <div className="profile-dashboard-background">
+                        <Row>
+                            <Col sm={3} md={3} className="profile-dashboard-sidebar-col">
+                                <div className="profile-sidebar-backgroung">
+                                    <ProfilePhotoCard employer={this.state.employer}/>
+                                    <div className="profile-sidebar-divider"></div>
+                                    <div className="profile-sidebar-divider"></div>
+                                    <ProfileContactInfoCard employer={this.state.employer}/>
+                                    <div className="profile-sidebar-divider"></div>
+                                </div>
+                            </Col>
+                            <Col sm={8} md={8}>
+                                <div className="">
+                                    <ProfileCareerObjectiveCard Description={this.state.employer.EmployerDescription} />
+                                    <div className="profile-sidebar-divider"></div>
+                                </div>
+                            </Col>
+                        </Row>
+                    </div>
+                </Styles>
+            )
+        } else {
+            return (
+                <div>
+                    Loading {localStorage.getItem("Type")} details...
+                </div>
             );
         }
 
-        
+
     }
 }
 
@@ -113,4 +173,21 @@ const mapStateToProps = state => {
     };
 };
 //Export The Main Component
-export default connect(mapStateToProps,{})(ProfileDashBoard);
+export default compose(
+    graphql(getStudentDetailsQuery, {
+        name: "getStudentDetailsQuery",
+        options: (props) => {
+            if (localStorage.getItem("Type") === 'student') {
+                return ({ variables: { id: localStorage.getItem("id") } })
+            }
+        }
+    }),
+    graphql(getEmployerDetailsQuery, {
+        name: "getEmployerDetailsQuery",
+        options: (props) => {
+            if (localStorage.getItem("Type") === 'employer') {
+                return ({ variables: { id: localStorage.getItem("id") } })
+            }
+        }
+    }),
+)(ProfileDashBoard);

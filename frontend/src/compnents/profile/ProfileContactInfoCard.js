@@ -44,9 +44,20 @@ class ProfileContactInfoCard extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {
-            show: false,
+        if(this.props.student){
+            this.state = {
+                show: false,
+                Email: this.props.student.Email,
+                PhoneNumber: this.props.student.PhoneNumber
+            }
+        }else{
+            this.state = {
+                show: false,
+                Email: this.props.employer.Email,
+                PhoneNumber: "408-860-9946"
+            }
         }
+        
         this.handleShow = this.handleShow.bind(this);
         this.handleClose = this.handleClose.bind(this);
     }
@@ -116,13 +127,11 @@ class ProfileContactInfoCard extends Component {
                 const data = {
                     PhoneNumber: this.state.phone_number
                 }
-                this.props.updateEmployerProfile(this.props.employerData,data);
             }
             else {
                 const data = {
                     PhoneNumber: this.state.phone_number
                 }
-                this.props.updateStudentProfile(this.props.studentData, data);
             }
         }
         if(this.props.user.user_type === "employer"){
@@ -131,7 +140,6 @@ class ProfileContactInfoCard extends Component {
                     Address: this.updatedAddress()
                 }
                 console.log("===-------------------------------=====",JSON.stringify(data));
-                this.props.updateEmployerProfile(this.props.employerData, data);
             }
         } 
     }
@@ -153,7 +161,7 @@ class ProfileContactInfoCard extends Component {
                                         <Form.Control onChange={this.onValueChangeHandler} name="phone_number" defaultValue={this.props.phone_number} />
                                     </Form.Group>
                                 </Form.Row>
-                                {this.props.user.user_type === "employer" &&
+                                {localStorage.getItem("Type") === "employer" &&
                                     <div>
                                         <Form.Group controlId="formGridAddress1">
                                             <Form.Label>Address</Form.Label>
@@ -215,7 +223,7 @@ class ProfileContactInfoCard extends Component {
                     </Modal>
                     <div className="profile-contact-contact">
                         <Row>
-                            <Col xs={10} md={10}>
+                            <Col  xs={10} md={10}>
                                 Contact Information
                             </Col>
                             <Col xs={1} md={1}>
@@ -223,33 +231,34 @@ class ProfileContactInfoCard extends Component {
                             </Col>
                         </Row>
                     </div>
+                    <br/>
                     <div className="profile-contact-type">
                         Email Address
                     </div>
                     <div className="profile-contact-value">
-                        {this.props.email}
+                        {this.state.Email}
                     </div>
                     <div className="profile-contact-type">
                         Phone Number
                     </div>
                     <div className="profile-contact-value">
-                        {this.props.phone_number}
+                        {this.state.PhoneNumber}
                     </div>
-                    {this.props.user.user_type === "employer" &&
+                    {localStorage.getItem("Type") === "employer" &&
                         <div>
                             <div className="profile-contact-type">
                                 Address
                         </div>
-                            {this.props.address &&
+                            {this.props.employer.Address &&
                                 <div>
                                     <div className="profile-contact-value">
-                                        {this.props.address.Street}
+                                        {this.props.employer.Address.Street}
                                     </div>
                                     <div className="profile-contact-value">
-                                        {this.props.address.Apt}
+                                        {this.props.employer.Address.Apt}
                                     </div>
                                     <div className="profile-contact-value">
-                                        {this.props.address.City}, {this.props.address.State}, {this.props.address.Zipcode}
+                                        {this.props.employer.Address.City}, {this.props.employer.Address.State}, {this.props.employer.Address.Zipcode}
                                     </div>
                                 </div>
                             }
@@ -262,15 +271,5 @@ class ProfileContactInfoCard extends Component {
         );
     };
 }
-const mapStateToProps = state => {
-    return {
-        user: state.auth,
-        email: getEmail(state),
-        phone_number: getPhoneNumber(state),
-        address: getAddress(state.employer.employerData),
-        studentData: state.student.studentData,
-        employerData: state.employer.employerData,
-    };
-};
 
-export default connect(mapStateToProps, {updateEmployerProfile, updateStudentProfile })(ProfileContactInfoCard);
+export default (ProfileContactInfoCard);

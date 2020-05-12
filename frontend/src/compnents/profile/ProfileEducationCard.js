@@ -80,6 +80,7 @@ class ProfileEducationCard extends Component {
             show: false,
             alertFlag: false,
             grad_date: new Date(),
+            Educations: this.props.Educations,
         }
         this.handleShow = this.handleShow.bind(this);
         this.handleClose = this.handleClose.bind(this);
@@ -159,7 +160,7 @@ class ProfileEducationCard extends Component {
                         <Modal.Header closeButton>
                             <Modal.Title>Add Education</Modal.Title>
                         </Modal.Header>
-                            {this.state.alertFlag && <Alert variant="danger">Insert all values</Alert>}
+                        {this.state.alertFlag && <Alert variant="danger">Insert all values</Alert>}
                         <Modal.Body>
                             <Form>
                                 <Form.Group controlId="school">
@@ -205,25 +206,40 @@ class ProfileEducationCard extends Component {
                                 Education
                             </Col>
                             <Col xs={1} md={1}>
-                                <Icon type="plus" onClick={this.handleShow}></Icon>
+                                <Icon type="edit" onClick={this.handleShow}></Icon>
                             </Col>
                         </Row>
                     </div>
                     <div >
-                        {eductionDetails}
+                        <div>
+                            <div className="profile-education-card">
+                                <div className="profile-education-school">
+                                    <Row>
+                                        <Col xs={11} md={11}>
+                                            {this.state.Educations.School}
+                                        </Col>
+                                    </Row>
+                                </div>
+                                <div className="profile-education-level">
+                                    {this.state.Educations.Level}
+                                </div>
+                                <div className="profile-education-major">
+                                    {"Major in " + this.state.Educations.Major}
+                                </div>
+                                <div className="profile-education-date">
+                                    {"Graduation date: " + this.state.Educations.GradDate}
+                                </div>
+                                <div className="profile-education-gpa">
+                                    {"Cumulative GPA: " + this.state.Educations.GPA}
+                                </div>
+                            </div>
+                            <div className="profile-education-card-divider"></div>
+                        </div>
                     </div>
                 </div>
             </Styles>
         );
     };
 }
-const mapStateToProps = state => {
-    return {
-        user: state.auth,
-        educations: getEducation(state.student.studentData),
-        studentData: state.student.studentData,
 
-    };
-};
-
-export default connect(mapStateToProps, { updateStudentProfile })(ProfileEducationCard);
+export default (ProfileEducationCard);
