@@ -1,0 +1,111 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+.login-sidebar {
+  background-color: #0066ff;
+  height: 815px;
+}
+
+.login-logo-image {
+  padding: 20px;
+  padding-top: 40px;
+  height: 130px;
+}
+
+
+.login-signin-sidebar {
+  padding: 150px;
+  padding-right: 200px;
+}
+
+.login-form-lable {
+  font-size: 12px;
+}
+
+.login-signup-link {
+  color : #0066ff;
+}
+
+.login-signup {
+  padding : 7px;
+}
+
+
+.signin-body {
+  padding: 150px;
+  padding-left: 150px;
+  padding-bottom: 2px;
+  padding-right: 200px;
+}
+
+.signin-form-lable {
+  font-size: 12px;
+}
+
+.signin-signup-link {
+  color : #0066ff;
+}
+
+.signin-signup {
+  padding : 7px;
+}
+
+
+.signup-body {
+  padding: 100px;
+  padding-left: 150px;
+  padding-bottom: 2px;
+  padding-right: 200px;
+}
+
+.signup-form-lable {
+  font-weight: bold;
+  font-size: 12px;
+}
+
+.signup-signin-link {
+  color : #0066ff;
+}
+
+.signup-signin {
+  padding : 5px;
+  font-weight: bold;
+  font-size: 12px;
+}
