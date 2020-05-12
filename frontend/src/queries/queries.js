@@ -47,6 +47,7 @@ query($Name: String!) {
 const getJobsQuery = gql`
 query($EmployerID: String!){
     job(EmployerID: $EmployerID){
+        id
         EmployerID
         EmployerName
         Postion

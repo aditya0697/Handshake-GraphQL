@@ -181,6 +181,9 @@ const AddressType = new GraphQLObjectType({
 const JobType = new GraphQLObjectType({
     name: "jobs",
     fields: () => ({
+        id: {
+            type: GraphQLID
+        },
         EmployerID: {
             type: GraphQLString
         },
@@ -214,6 +217,9 @@ const JobType = new GraphQLObjectType({
 const ApplicationType = new GraphQLObjectType({
     name: "application",
     fields: () => ({
+        id: {
+            type: GraphQLID
+        },
         StudentID: {
             type: StudentType
         },
@@ -493,6 +499,31 @@ const Mutation = new GraphQLObjectType({
                 });
                 console.log("result: ", JSON.stringify(result));
                 if (result) {
+                    return "Failed";
+                } else {
+                    return "Success";
+                }
+            }
+        },
+
+        addApplication: {
+            type: GraphQLString,
+            args: {
+                EmployerID: { type: GraphQLString },
+                StudentID: { type: GraphQLString },
+                JobID: { type: GraphQLString },
+            },
+            async resolve(parent, args) {
+                var newApplication = new Application({
+                    EmployerID: args.EmployerID,
+                    StudentID: args.StudentID,
+                    JobID: args.JobID,
+                    Status: "Submitted"
+                })
+                var result = await newApplication.save();
+
+                console.log("result: ", JSON.stringify(result));
+                if (!result) {
                     return "Failed";
                 } else {
                     return "Success";

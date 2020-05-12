@@ -218,11 +218,5 @@ export default compose(
             }
             return ({ variables: {EmployerID: "", StudentID: localStorage.getItem("id") } })
         }
-    }),
-
-    graphql(addApplication, { name: "addApplication", 
-        options:{
-            refetchQueries: [{ query: getApplicationsQuery, variables: { EmployerID: "", StudentID: localStorage.getItem("id") } }]
-    }  })
-)
-(ApplicationDashBoard);
+    }),   
+)(ApplicationDashBoard);
